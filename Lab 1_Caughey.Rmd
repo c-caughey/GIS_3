@@ -1,0 +1,58 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r, echo=TRUE, eval=FALSE}
+---
+title: "Lab1_Caughey"
+author: "Cyrus Caughey"
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_float: true
+---
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+version
+```
+
+
+```{r}
+install.packages("sf")
+install.packages("raster")
+install.packages("spData")
+devtools::install_github("Nowosad/spDataLarge")
+```
+```{r}
+library(sf)
+library(raster)
+library(spData)
+```
+
+```{r}
+plot(world)
+summary(world)
+```
+
+```{r}
+summary(world$geom) 
+```
+
+```{r}
+plot(world["continent"], reset = FALSE)
+cex = (world$lifeExp - 50) / 15
+world_cents = st_centroid(world, of_largest = TRUE)
+plot(st_geometry(world_cents), add = TRUE, cex = cex)
+```
+

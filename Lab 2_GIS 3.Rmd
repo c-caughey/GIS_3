@@ -1,0 +1,67 @@
+---
+title: "GIS 3 Lab 2"
+author: "Cyrus Caughey"
+date: "4/19/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#This is a quick tutorial on how to join non-spatial data with spatial data,
+#as well as how to view this data on a map.
+```
+
+
+```{r}
+#These are the essential libraries needed.
+library(sf)
+library(raster)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+library(spData)
+```
+
+```{r}
+#First, we need to visualize the entire New Zealand dataset in the spData package.
+nz
+plot(nz)
+```
+
+
+```{r}
+#We find that the nz dataset has a variety of different variables that we can look at.
+#Let's take a look at the elevation data.
+nz_height
+plot(nz_height)
+```
+
+```{r}
+#While we can see above that the data itself is inherently spatial point data,
+#we can run non-spatial functions on the variable data.
+#Let's see the summary statistics and a histogram of the values in the elevation column.
+summary(nz_height$elevation)
+hist(nz_height$elevation)
+```
+```{r}
+#Now let's join the point data we saw before with the polygon data of all the regions in New Zealand.
+#We will be able to also see how many points are in each region polygon.
+nz_highs = st_join(nz, nz_height, left=FALSE) %>% group_by(Name) %>% summarize(Heights = n()) %>%
+  arrange(desc(Heights))
+nz_highs
+plot(nz_highs)
+```
+
+
+```{r}
+#The maps we saw above had two variables plotted and neither of them were plotted well.
+#We want to look only at the elevation data and we want a legend that actually tells us what we are looking at.
+ggplot(data = nz_highs) +
+  geom_sf(aes(fill = Heights)) +
+  scale_fill_viridis_c(option = "plasma", trans = "log2")
+```
+
